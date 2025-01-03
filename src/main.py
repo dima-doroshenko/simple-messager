@@ -1,8 +1,16 @@
+import asyncio
+
 from fastapi import FastAPI
 
-import uvicorn
+from database import Base, engine
+
 
 app = FastAPI()
 
-if __name__ == '__main__':
-    uvicorn.run(app, reload=True)
+async def init_db():
+    async with engine.connect() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+asyncio.run_coroutine_threadsafe(
+    init_db(), asyncio.get_running_loop()
+)
