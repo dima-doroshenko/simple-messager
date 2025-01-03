@@ -22,7 +22,7 @@ class UsersOrm(Base):
     username: Mapped[str] = mapped_column(String(16), unique=True)
     description: Mapped[optional_str256]
 
-    chats: Mapped[list['ChatsOrm']] = relationship(lazy='selectin')
-
+    chats: Mapped[list['ChatsOrm']] = relationship(lazy='selectin', back_populates='members')
+    
 
 

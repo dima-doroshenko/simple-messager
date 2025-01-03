@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 from sqlalchemy import String, ForeignKey
 
@@ -24,5 +23,5 @@ class MessagesOrm(Base):
     from_user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
 
     from_user: Mapped['UsersOrm'] = relationship(lazy='joined')
-    chat: Mapped['ChatsOrm'] = relationship(lazy='joined')
+    chat: Mapped['ChatsOrm'] = relationship(lazy='joined', back_populates='messages')
     
