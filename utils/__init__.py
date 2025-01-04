@@ -1,1 +1,1 @@
-# from .auth.dependencies import get_current_user
+from .auth.dependencies import get_current_user

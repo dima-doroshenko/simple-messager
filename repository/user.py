@@ -4,6 +4,8 @@ import uuid
 from fastapi import Response
 from fastapi.security import HTTPBasicCredentials
 
+from sqlalchemy import update
+
 from database import UsersOrm
 from utils import auth
 from config import settings

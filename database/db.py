@@ -1,9 +1,19 @@
+from typing import Any
+
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from config import settings
 
-class Base(DeclarativeBase): ...
+class Base(DeclarativeBase):
+    
+    @property
+    def as_dict(self) -> dict[str, Any]: 
+        return {
+            c.name: getattr(self, c.name) 
+            for c in self.__table__.columns
+        }
+    
 engine = create_async_engine(settings.db.url)
 session_factory = async_sessionmaker(engine)
 
