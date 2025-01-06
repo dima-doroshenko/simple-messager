@@ -17,3 +17,10 @@ router.include_router(
     tags=['Profile'],
     prefix='/profile'
 )
+
+from .chats import router as chats_router
+router.include_router(
+    chats_router,
+    tags=['Chats'],
+    prefix='/chats'
+)

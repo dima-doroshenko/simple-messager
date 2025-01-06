@@ -1,8 +1,8 @@
 import json
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 from database import AsyncSession, session_dependency, CookiesOrm, UsersOrm
 from utils.auth import hash_password
@@ -55,7 +55,7 @@ class Crud:
     
     async def get_user_by_username(
         self, username: str
-    ):
+    ) -> User | None:
         query = (
             select(UsersOrm)
             .where(UsersOrm.username == username)
@@ -65,3 +65,39 @@ class Crud:
 
         if user_obj is not None:
             return User(self, user_obj)
+        
+    async def get_user_by_id(
+        self, id: int
+    ) -> User | None:
+        obj = await self.session.get(UsersOrm, id)
+        if obj is not None:
+            return User(self, obj)
+        
+    async def check_if_users_exist(
+        self, 
+        user_ids: int | list[int],
+        raise_exc: bool = True
+    ) -> bool:
+        if isinstance(user_ids, int):
+            user_ids = [user_ids]
+        query = (
+            select(UsersOrm.id)
+            .where(UsersOrm.id.in_(user_ids))
+        )
+
+        res = await self.session.execute(query)
+        found_users = res.all()
+        result = len(user_ids) == len(found_users)
+        
+        if raise_exc and not result:
+
+            for id in user_ids:
+                if id not in found_users:
+                    break
+
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f'User with id {id} not found'
+            )
+        
+        return result

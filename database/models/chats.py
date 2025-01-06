@@ -22,6 +22,8 @@ class ChatsOrm(Base):
     description: Mapped[optional_str256]
 
     owner_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
-    
-    members: Mapped[list['UsersOrm']] = relationship(lazy='selectin')
+
+    users: Mapped[list['UsersOrm']] = relationship(
+        'UsersOrm', secondary='user_chats', 
+        back_populates='chats', lazy='selectin')
     messages: Mapped[list['MessagesOrm']] = relationship(lazy='selectin', back_populates='chat')

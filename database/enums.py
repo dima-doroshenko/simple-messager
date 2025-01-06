@@ -1,5 +1,5 @@
-from enum import Enum, auto
+from enum import Enum
 
 class ChatType(Enum):
-    private = auto()
-    group = auto()
+    private = 'private'
+    group = 'group'

@@ -3,7 +3,10 @@ from fastapi import Cookie, Depends, Response
 from repository import Crud
 
 from .schemas import UserLogin
-from .exc import UnauthedException, UserNotFoundException, InvalidCookieException
+from .exc import (
+    UnauthedException, UserNotFoundException, 
+    InvalidCookieException, InvalidUsernameOrPasswordException
+)
 
 from config import settings
 
@@ -23,5 +26,8 @@ async def get_current_user(
     
     if not (user := await crud.get_user_by_username(credentials.username)):
         raise UserNotFoundException
+    
+    if not user.check_password(credentials.password):
+        raise InvalidUsernameOrPasswordException
         
     return user
