@@ -1,26 +1,25 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter
 
-from repository import User
 from utils import get_current_user
-from schemas import Answer, CreatePrivateChat, CreateGroupChat, InviteUser
+from schemas import Answer, CreatePrivateChat, CreateGroupChat
 
 router = APIRouter()
 
 @router.post('/private/')
 async def create_private_chat(
     data: CreatePrivateChat,
-    user: User = Depends(get_current_user)
+    user: get_current_user
 ) -> Answer:
-    chat_id = await user.create_private_chat(data)
+    await user.create_private_chat(data)
     return Answer(
-        data={'chat_id': chat_id},
+        data={'chat_id': data.with_user},
         msg='Private chat created'
     )
 
-@router.post('/group')
-async def create_goup_chat(
+@router.post('/group/')
+async def create_group_chat(
     data: CreateGroupChat,
-    user: User = Depends(get_current_user)
+    user: get_current_user
 ) -> Answer:
     chat_id = await user.create_group_chat(data)
     return Answer(
@@ -28,20 +27,14 @@ async def create_goup_chat(
         msg='Group chat created'
     )
 
-@router.patch('/{chat_id}')
+@router.patch('/{chat_id}/')
 async def edit_chat(
     chat_id: int,
+    user: get_current_user,
     new_name: str = None,
-    new_description: str = None,
-    user: User = Depends(get_current_user)
+    new_description: str = None
 ) -> Answer:
-    chat = await user.get_chat(chat_id)
-
-    if chat.is_private:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail='Private chat cannot be edited'
-        )
+    chat = await user.get_group_chat(chat_id)
     
     if new_name is not None:
         chat.obj.name = new_name
@@ -52,19 +45,31 @@ async def edit_chat(
 
     return Answer(msg='Chat edited')
 
-@router.post('/invite_user')
+@router.delete('/{chat_id}/')
+async def delete_chat(
+    chat_id: int,
+    user: get_current_user
+) -> Answer:
+    chat = await user.get_group_chat(chat_id)
+    await chat.delete()
+    return Answer(msg='Chat deleted')
+
+@router.post('/{chat_id}/users/')
 async def invite_user(
-    data: InviteUser,
-    user: User = Depends(get_current_user)
-):
-    chat = await user.get_chat(data.chat_id)
-    await chat.invite_user_to_chat(data.user_id)
+    chat_id: int,
+    user_id: int,
+    user: get_current_user
+) -> Answer:
+    chat = await user.get_group_chat(chat_id)
+    await chat.invite_user(user_id)
     return Answer(msg='User invited')
 
-@router.get('/{chat_id}')
-async def get_chat(
+@router.delete('/{chat_id}/users/')
+async def kick_user(
     chat_id: int,
-    user: User = Depends(get_current_user)
-):
-    chat = await user.get_chat(chat_id)
-    return chat.obj.as_dict
+    user_id: int,
+    user: get_current_user
+) -> Answer:
+    chat = await user.get_group_chat(chat_id)
+    await chat.kick_user(user_id)
+    return Answer(msg='User kicked')

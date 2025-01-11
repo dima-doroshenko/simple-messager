@@ -8,5 +8,3 @@ class CookiesOrm(Base):
 
     key: Mapped[str] = mapped_column(unique=True, primary_key=True)
     value: Mapped[str]
-    
-    

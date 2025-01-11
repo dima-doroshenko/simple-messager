@@ -1,13 +1,14 @@
 from typing import TYPE_CHECKING
 
 from sqlalchemy.orm import Mapped, relationship, mapped_column
-from sqlalchemy import String, BLOB
+from sqlalchemy import String
 
 from ..db import Base
 from ..annotations import created_at, updated_at, intpk, str32, optional_str256
 
 if TYPE_CHECKING:
-    from .chats import ChatsOrm
+    from .group_chats import GroupChatsOrm
+    from .private_chats import PrivateChatsOrm
 
 
 class UsersOrm(Base):
@@ -21,11 +22,3 @@ class UsersOrm(Base):
     name: Mapped[str32]
     username: Mapped[str] = mapped_column(String(16), unique=True)
     description: Mapped[optional_str256]
-
-    chats: Mapped[list['ChatsOrm']] = relationship(
-        'ChatsOrm', secondary='user_chats', 
-        back_populates='users', lazy='selectin'
-    )
-    
-
-

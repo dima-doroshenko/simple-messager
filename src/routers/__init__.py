@@ -24,3 +24,20 @@ router.include_router(
     tags=['Chats'],
     prefix='/chats'
 )
+
+from .me import router as me_router
+from .messages import router as messages_router
+
+me_router_prefix = '/me/chats'
+
+router.include_router(
+    messages_router,
+    tags=['Messages'],
+    prefix=me_router_prefix + '/{chat_id}/msg'
+)
+
+router.include_router(
+    me_router,
+    tags=['Me'],
+    prefix=me_router_prefix
+)

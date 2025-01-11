@@ -3,7 +3,7 @@ from fastapi.security import HTTPBasicCredentials, HTTPBasic
 
 from schemas import Answer
 from utils.auth import validate_login, InvalidUsernameOrPasswordException, get_current_user
-from repository import Crud, User
+from repository import Crud
 from config import settings
 
 router = APIRouter()
@@ -46,7 +46,10 @@ async def login(
 @router.post('/logout/')
 async def logout(
     response: Response,
-    user: User = Depends(get_current_user)
+    user: get_current_user
 ) -> Answer:
     response.delete_cookie(settings.auth.session_id_key)
-    return Answer(msg='Successful logout')
+    return Answer(
+        data={'user_id': user.obj.id},
+        msg='Successful logout'
+    )
