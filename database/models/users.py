@@ -1,18 +1,12 @@
-from typing import TYPE_CHECKING
-
-from sqlalchemy.orm import Mapped, relationship, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import String
 
 from ..db import Base
 from ..annotations import created_at, updated_at, intpk, str32, optional_str256
 
-if TYPE_CHECKING:
-    from .group_chats import GroupChatsOrm
-    from .private_chats import PrivateChatsOrm
-
 
 class UsersOrm(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id: Mapped[intpk]
     hashed_password: Mapped[bytes]

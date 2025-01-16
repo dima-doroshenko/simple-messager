@@ -1,22 +1,24 @@
-from fastapi import HTTPException, status
+from fastapi import status
 
-InvalidUsernameOrPasswordException = HTTPException(
+from utils.exc import AnswerException
+
+InvalidUsernameOrPasswordException = AnswerException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail='Invalid username or password'
+    msg='Invalid username or password'
 )
-UserNotFoundException = HTTPException(
+UserNotFoundException = AnswerException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail='User not found'
+    msg='User not found'
 )
-UserWithSameUsernameAlreadyExists = HTTPException(
+UserWithSameUsernameAlreadyExists = AnswerException(
     status.HTTP_409_CONFLICT,
-    'User with same username already exists'
+    msg='User with same username already exists'
 )
-UnauthedException = HTTPException(
+UnauthedException = AnswerException(
     status_code=status.HTTP_403_FORBIDDEN,
-    detail='Please, login to your account'
+    msg='Please, login to your account'
 )
-InvalidCookieException = HTTPException(
+InvalidCookieException = AnswerException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail='Cookie is invalid'
+    msg='Cookie is invalid'
 )

@@ -5,7 +5,7 @@ from schemas import Answer, CreatePrivateChat, CreateGroupChat
 
 router = APIRouter()
 
-@router.post('/private/')
+@router.post('/private')
 async def create_private_chat(
     data: CreatePrivateChat,
     user: get_current_user
@@ -16,7 +16,7 @@ async def create_private_chat(
         msg='Private chat created'
     )
 
-@router.post('/group/')
+@router.post('/group')
 async def create_group_chat(
     data: CreateGroupChat,
     user: get_current_user
@@ -27,7 +27,7 @@ async def create_group_chat(
         msg='Group chat created'
     )
 
-@router.patch('/{chat_id}/')
+@router.patch('/{chat_id}')
 async def edit_chat(
     chat_id: int,
     user: get_current_user,
@@ -45,7 +45,7 @@ async def edit_chat(
 
     return Answer(msg='Chat edited')
 
-@router.delete('/{chat_id}/')
+@router.delete('/{chat_id}')
 async def delete_chat(
     chat_id: int,
     user: get_current_user
@@ -54,7 +54,7 @@ async def delete_chat(
     await chat.delete()
     return Answer(msg='Chat deleted')
 
-@router.post('/{chat_id}/users/')
+@router.post('/{chat_id}/user')
 async def invite_user(
     chat_id: int,
     user_id: int,
@@ -64,7 +64,7 @@ async def invite_user(
     await chat.invite_user(user_id)
     return Answer(msg='User invited')
 
-@router.delete('/{chat_id}/users/')
+@router.delete('/{chat_id}/user')
 async def kick_user(
     chat_id: int,
     user_id: int,

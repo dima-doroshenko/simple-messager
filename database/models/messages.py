@@ -1,15 +1,9 @@
-from typing import TYPE_CHECKING
-
-from sqlalchemy.orm import Mapped, relationship, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import String, ForeignKey
 
 from ..db import Base
 from ..annotations import created_at, intpk, datetoday, updated_at
 from ..enums import ChatType
-
-if TYPE_CHECKING:
-    from .users import UsersOrm
-    from .group_chats import GroupChatsOrm
 
 
 class MessagesOrm(Base):

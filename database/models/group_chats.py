@@ -7,22 +7,19 @@ from ..db import Base
 from ..annotations import intpk, optional_str256, str32
 
 if TYPE_CHECKING:
-    from .users import UsersOrm
-    from .messages import MessagesOrm
     from .user_chats import UserChatsOrm
 
 
 class GroupChatsOrm(Base):
-    __tablename__ = 'group_chats'
+    __tablename__ = "group_chats"
 
     id: Mapped[intpk]
 
     name: Mapped[str32]
     description: Mapped[optional_str256]
 
-    owner_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
-    user_ids: Mapped[list['UserChatsOrm']] = relationship(
-        'UserChatsOrm', backref='chat',
-        lazy='selectin'
+    users: Mapped[list["UserChatsOrm"]] = relationship(
+        "UserChatsOrm", backref="chat", lazy="selectin"
     )
